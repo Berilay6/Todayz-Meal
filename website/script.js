@@ -1,8 +1,8 @@
-// Firebase SDK ve Firestore bağlantısı
+// Firebase SDK and Firestore connection
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-// Firebase yapılandırması
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAOuriGi3FYCzhM0tstQQoT4SBU84hIPrM",
   authDomain: "todayz-meal-3f537.firebaseapp.com",
@@ -12,17 +12,17 @@ const firebaseConfig = {
   appId: "1:31772265109:web:c63d7d9702d43ff140699c"
 };
 
-// Firebase başlatma
+// Initializing Firebase
 const app = initializeApp(firebaseConfig);
 
-// Firestore bağlantısı
+// Firestore connection
 const db = getFirestore(app);
 
-// Spoonacular API yapılandırması
+// Spoonacular API configuration
 const apiKey = "f09e49ff927e44759109dea49b7e76e0";
 const apiUrl = "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
 
-// Arama butonunun dinleyicisi
+// Search button event listener
 document.getElementById("searchButton").addEventListener("click", fetchRecipes);
 
 async function fetchRecipes() {
@@ -31,7 +31,7 @@ async function fetchRecipes() {
     const vegetarianFilter = document.getElementById("vegetarianFilter").checked;
 
     if (!ingredient) {
-        alert("Lütfen bir malzeme girin!");
+        alert("Please enter an ingredient!");
         return;
     }
 
@@ -43,7 +43,7 @@ async function fetchRecipes() {
         recipeList.innerHTML = "";
 
         if (recipes.length === 0) {
-            recipeList.innerHTML = "<li>Tarif bulunamadı!</li>";
+            recipeList.innerHTML = "<li>No recipes found!</li>";
             return;
         }
 
@@ -59,19 +59,19 @@ async function fetchRecipes() {
             li.innerHTML = `
                 <strong>${recipe.title}</strong><br>
                 <img src="${recipe.image}" width="100"><br>
-                <p>Vegan: ${recipeDetails.vegan ? "Evet" : "Hayır"}</p>
-                <p>Vegetarian: ${recipeDetails.vegetarian ? "Evet" : "Hayır"}</p>
-                <button class="viewDetailsButton" data-recipe-id="${recipe.id}">Detayları Gör</button>
+                <p>Vegan: ${recipeDetails.vegan ? "Yes" : "No"}</p>
+                <p>Vegetarian: ${recipeDetails.vegetarian ? "Yes" : "No"}</p>
+                <button class="viewDetailsButton" data-recipe-id="${recipe.id}">View Details</button>
             `;
             recipeList.appendChild(li);
         }
 
     } catch (error) {
-        console.error("Tarifleri alırken hata oluştu:", error);
+        console.error("Error fetching recipes:", error);
     }
 }
 
-// "View Details" butonları için olay dinleyicisi (Event Delegation)
+// Event listener for "View Details" buttons (Event Delegation)
 document.addEventListener("click", (event) => {
     if (event.target.classList.contains("viewDetailsButton")) {
         const recipeId = event.target.getAttribute("data-recipe-id");
@@ -88,23 +88,23 @@ async function fetchRecipeDetails(recipeId) {
         modalBody.innerHTML = `
             <h2>${recipe.title}</h2>
             <img src="${recipe.image}" alt="${recipe.title}" width="200"><br>
-            <p><strong>Hazırlık Süresi:</strong> ${recipe.readyInMinutes} dakika</p>
-            <p><strong>Servis Sayısı:</strong> ${recipe.servings}</p>
-            <h3>Malzemeler:</h3>
+            <p><strong>Preparation Time:</strong> ${recipe.readyInMinutes} minutes</p>
+            <p><strong>Servings:</strong> ${recipe.servings}</p>
+            <h3>Ingredients:</h3>
             <ul>
                 ${recipe.extendedIngredients.map(ing => `<li>${ing.original}</li>`).join("")}
             </ul>
-            <h3>Tarif:</h3>
-            <p>${recipe.instructions || "Tarif talimatları mevcut değil."}</p>
-            <button id="favoriteButton">❤️ Favorilere Ekle</button>
+            <h3>Recipe:</h3>
+            <p>${recipe.instructions || "No recipe instructions available."}</p>
+            <button id="favoriteButton">❤️ Add to Favorites</button>
         `;
 
         document.getElementById("modal").style.display = "block";
 
-        // Favorilere ekleme butonu işlevi
+        // Add to favorites button function
         document.getElementById("favoriteButton").addEventListener("click", () => addToFavorites(recipe));
     } catch (error) {
-        console.error("Tarif detaylarını alırken hata oluştu:", error);
+        console.error("Error fetching recipe details:", error);
     }
 }
 
@@ -117,21 +117,21 @@ async function addToFavorites(recipe) {
             readyInMinutes: recipe.readyInMinutes,
             servings: recipe.servings,
             ingredients: recipe.extendedIngredients.map(ing => ing.original),
-            instructions: recipe.instructions || "Tarif talimatları mevcut değil."
+            instructions: recipe.instructions || "No recipe instructions available."
         });
-        console.log("Tarif başarıyla eklendi:", recipe);
-        alert("Tarif favorilere eklendi! ✅");
+        console.log("Recipe successfully added:", recipe);
+        alert("Recipe added to favorites! ✅");
     } catch (error) {
-        console.error("Favorilere eklerken hata oluştu:", error);
+        console.error("Error adding to favorites:", error);
     }
 }
 
+// Modal close function
 window.closeModal = function () {
     document.getElementById("modal").style.display = "none";
 };
 
-
-// Modal'ı dışarıya tıklayarak kapatma işlevi
+// Close modal by clicking outside
 window.addEventListener("click", (event) => {
     if (event.target === document.getElementById("modal")) {
         closeModal();
