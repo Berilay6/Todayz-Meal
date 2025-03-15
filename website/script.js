@@ -1,4 +1,4 @@
-const apiKey = "df9950684f9d4726844ba7ab898f40fb";
+const apiKey = "a09563f1a4f54c698fadb28e1877ea03";
 const apiUrl = "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
 
 document.getElementById("searchButton").addEventListener("click", fetchRecipes);
