@@ -1,0 +1,96 @@
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Quicksand', sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: rgb(154, 227, 209);
+  color: #050000;
+}
+
+.main {
+  background: #6dd0ce;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(255, 255, 255, 0.5);
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+h1 {
+  color: rgb(1, 42, 1);
+  
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  text-align: left;
+  font-weight: 500;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1em;
+  outline: none;
+}
+
+button {
+  background: rgb(208, 231, 156);
+  color: #000;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: rgb(213, 233, 156);
+}
+
+p {
+  margin-top: 15px;
+}
+
+a {
+  color: rgb(213, 233, 156);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 30px;
+  }
+}
