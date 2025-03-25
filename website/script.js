@@ -3,6 +3,9 @@ const apiUrl =
   "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
 
 document.getElementById("searchButton").addEventListener("click", fetchRecipes);
+document.getElementById("profileButton").addEventListener("click", function () {
+  window.location.href = "profile.html";
+});
 
 async function fetchRecipes() {
   const ingredient = document.getElementById("ingredientInput").value.trim();
