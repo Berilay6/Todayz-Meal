@@ -1,105 +1,94 @@
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import {
+  auth,
+  db,
+  onAuthStateChanged,
   doc,
   setDoc,
-  getDoc,
-  updateDoc,
-  arrayUnion,
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+  signOut,
+  collection,
+  getDocs,
+} from "./firebase.js";
 
-const apiKey = "f53ccab5d21f4b47a7ae3f83f4d89296";
+const apiKey = "f09e49ff927e44759109dea49b7e76e0";
 const apiUrl =
   "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
 
-document.getElementById("searchButton").addEventListener("click", fetchRecipes);
-document.getElementById("profileButton").addEventListener("click", function () {
-  window.location.href = "profile.html";
+document.getElementById("logoutBtn").onclick = () => {
+  signOut(auth).then(() => (location.href = "login.html"));
+};
+
+document.getElementById("profileButton").onclick = () => {
+  location.href = "profile.html";
+};
+
+document.getElementById("searchButton").onclick = fetchRecipes;
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) location.href = "login.html";
 });
 
 async function fetchRecipes() {
-  const ingredient = document.getElementById("ingredientInput").value.trim();
-  const veganFilter = document.getElementById("veganFilter").checked;
-  const vegetarianFilter = document.getElementById("vegetarianFilter").checked;
+  const ingredient = document.getElementById("ingredientInput").value;
+  const vegan = document.getElementById("veganFilter").checked;
+  const vegetarian = document.getElementById("vegetarianFilter").checked;
 
-  if (!ingredient) {
-    alert("Please enter an ingredient!");
-    return;
-  }
+  const res = await fetch(`${apiUrl}${ingredient}&apiKey=${apiKey}`);
+  const recipes = await res.json();
+  const recipeList = document.getElementById("recipeList");
+  recipeList.innerHTML = "";
 
-  try {
-    const response = await fetch(apiUrl + ingredient + `&apiKey=${apiKey}`);
-    let recipes = await response.json();
+  recipes.forEach(async (recipe) => {
+    const details = await fetch(
+      `https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=${apiKey}`
+    ).then((r) => r.json());
 
-    const recipeList = document.getElementById("recipeList");
-    recipeList.innerHTML = "";
-
-    if (recipes.length === 0) {
-      recipeList.innerHTML = "<li>No recipes found!</li>";
+    if ((vegan && !details.vegan) || (vegetarian && !details.vegetarian))
       return;
-    }
 
-    for (const recipe of recipes) {
-      const detailsResponse = await fetch(
-        `https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=${apiKey}`
-      );
-      const recipeDetails = await detailsResponse.json();
-
-      if (
-        (veganFilter && !recipeDetails.vegan) ||
-        (vegetarianFilter && !recipeDetails.vegetarian)
-      ) {
-        continue;
-      }
-
-      const li = document.createElement("li");
-      li.innerHTML = `
-                <strong>${recipe.title}</strong><br>
-                <img src="${recipe.image}" width="100"><br>
-                <p>Vegan: ${recipeDetails.vegan ? "Yes" : "No"}</p>
-                <p>Vegetarian: ${recipeDetails.vegetarian ? "Yes" : "No"}</p>
-                <button onclick="fetchRecipeDetails(${
-                  recipe.id
-                })">View Details</button>
-            `;
-      recipeList.appendChild(li);
-    }
-  } catch (error) {
-    console.error("Error fetching recipes:", error);
-  }
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${recipe.title}</strong><br>
+      <img src="${recipe.image}" width="100"><br>
+      Vegan: ${details.vegan ? "Yes" : "No"}<br>
+      Vegetarian: ${details.vegetarian ? "Yes" : "No"}<br>
+      <button onclick="fetchRecipeDetails(${recipe.id})">Details</button>
+    `;
+    recipeList.appendChild(li);
+  });
 }
 
-async function fetchRecipeDetails(recipeId) {
-  try {
-    const response = await fetch(
-      `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${apiKey}`
-    );
-    const recipe = await response.json();
+window.fetchRecipeDetails = async (id) => {
+  const recipe = await fetch(
+    `https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`
+  ).then((r) => r.json());
 
-    const modalBody = document.getElementById("modalBody");
-    modalBody.innerHTML = `
-            <h2>${recipe.title}</h2>
-            <img src="${recipe.image}" alt="${recipe.title}" width="200"><br>
-            <p><strong>Preparation Time:</strong> ${
-              recipe.readyInMinutes
-            } minutes</p>
-            <p><strong>Servings:</strong> ${recipe.servings}</p>
-            <h3>Ingredients:</h3>
-            <ul>
-                ${recipe.extendedIngredients
-                  .map((ing) => `<li>${ing.original}</li>`)
-                  .join("")}
-            </ul>
-            <h3>Instructions:</h3>
-            <p>${recipe.instructions || "No recipe instructions available."}</p>
-        `;
+  document.getElementById("modalBody").innerHTML = `
+    <h2>${recipe.title}</h2>
+    <img src="${recipe.image}" width="200"><br>
+    <ul>${recipe.extendedIngredients
+      .map((i) => `<li>${i.original}</li>`)
+      .join("")}</ul>
+    <p>${recipe.instructions || "No instructions"}</p>
+    <button id="addFavorite">❤️ Favorite</button>
+  `;
 
-    document.getElementById("modal").style.display = "block";
-  } catch (error) {
-    console.error("Error fetching recipe details:", error);
-  }
-}
+  document.getElementById("modal").style.display = "block";
+  document.getElementById("addFavorite").onclick = () => addToFavorites(recipe);
+};
 
-function closeModal() {
+window.closeModal = () => {
   document.getElementById("modal").style.display = "none";
+};
+
+async function addToFavorites(recipe) {
+  const user = auth.currentUser;
+  await setDoc(doc(db, "favorites", user.uid, "items", recipe.id.toString()), {
+    id: recipe.id,
+    title: recipe.title,
+    image: recipe.image,
+    vegan: recipe.vegan,
+    vegetarian: recipe.vegetarian,
+    addedAt: new Date(),
+  });
+  alert("Added to favorites!");
 }

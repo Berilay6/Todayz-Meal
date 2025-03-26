@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
     />
   </head>
   <body>
@@ -15,40 +15,31 @@
       <img src="profile.jpg" alt="Profile" />
     </button>
 
-    <!--<form>-->
-    <div class="wrapper">
-      <div class="search-container">
-        <h2 class="title">Todayz Meal</h2>
-        <div class="search">
-          <span class="search-icon material-symbols-outlined">search</span>
-          <input
-            class="search-input"
-            type="search"
-            id="ingredientInput"
-            placeholder="Enter ingredients"
-          />
-        </div>
-        <div class="checkbox">
-          <label> <input type="checkbox" id="veganFilter" /> Vegan </label>
-          <label>
-            <input type="checkbox" id="vegetarianFilter" /> Vegetarian
-          </label>
-        </div>
-        <button id="searchButton">Search Recipes</button>
-        <button id="logoutBtn" onclick="window.location.href='login.html'">
-          Logout
-        </button>
+    <div class="search-container">
+      <h2 class="title">Todayz Meal</h2>
+      <div class="search">
+        <span class="search-icon material-symbols-outlined">search</span>
+        <input
+          class="search-input"
+          type="search"
+          id="ingredientInput"
+          placeholder="Enter ingredients"
+        />
       </div>
+      <div class="checkbox">
+        <label><input type="checkbox" id="veganFilter" /> Vegan</label>
+        <label
+          ><input type="checkbox" id="vegetarianFilter" /> Vegetarian</label
+        >
+      </div>
+      <button id="searchButton">Search Recipes</button>
+      <button id="logoutBtn">Logout</button>
     </div>
 
     <div class="recipe-container">
       <h2>Recipes</h2>
       <ul id="recipeList"></ul>
     </div>
-    <!--- </form> -->
-
-    <!--<button  style="font-size: 25px; background-color: blueviolet; color: #000 ; border-radius: 25px;"          id="searchButton">Search Recipes</button> -->
-    <ul id="recipeList"></ul>
 
     <!-- Modal -->
     <div
@@ -79,7 +70,7 @@
         <div id="modalBody"></div>
       </div>
     </div>
-    <script type="module" src="firebase.js"></script>
-    <script src="script.js"></script>
+
+    <script type="module" src="script.js"></script>
   </body>
 </html>

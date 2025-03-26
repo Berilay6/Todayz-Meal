@@ -1,5 +1,4 @@
-import { auth } from "./firebase.js";
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { auth, signInWithEmailAndPassword } from "./firebase.js";
 
 document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault(); // Prevent page reload

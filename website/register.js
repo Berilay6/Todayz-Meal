@@ -2,7 +2,7 @@ import { auth } from "./firebase.js";
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 document.getElementById("signUpForm").addEventListener("submit", function (e) {
-  e.preventDefault(); // Prevent page reload
+  e.preventDefault();
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -14,9 +14,9 @@ document.getElementById("signUpForm").addEventListener("submit", function (e) {
   }
 
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      window.location.href = "login.html"; // Redirect on success
+    .then(() => {
+      alert("Successfully registered!");
+      window.location.href = "login.html";
     })
     .catch((error) => {
       alert("Signup failed: " + error.message);
