@@ -82,13 +82,35 @@ window.closeModal = () => {
 
 async function addToFavorites(recipe) {
   const user = auth.currentUser;
-  await setDoc(doc(db, "favorites", user.uid, "items", recipe.id.toString()), {
-    id: recipe.id,
-    title: recipe.title,
-    image: recipe.image,
-    vegan: recipe.vegan,
-    vegetarian: recipe.vegetarian,
-    addedAt: new Date(),
-  });
-  alert("Added to favorites!");
+  if (!user) return alert("You must be logged in to favorite.");
+
+  try {
+    // Kullanıcının email'ini ana belgeye ekle
+    await setDoc(
+      doc(db, "favorites", user.uid),
+      {
+        email: user.email,
+      },
+      { merge: true }
+    );
+
+    // Favori tarifi ekle
+    await setDoc(
+      doc(db, "favorites", user.uid, "items", recipe.id.toString()),
+      {
+        id: recipe.id,
+        title: recipe.title,
+        image: recipe.image,
+        vegan: recipe.vegan,
+        vegetarian: recipe.vegetarian,
+        email: user.email,
+        addedAt: new Date(),
+      }
+    );
+
+    alert("Added to favorites!");
+  } catch (err) {
+    console.error("Error adding to favorites:", err);
+    alert("Failed to add to favorites.");
+  }
 }
