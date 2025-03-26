@@ -1,20 +1,17 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+// register.js (son hali)
 
-// Your web app's Firebase configuration
+// Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+// Firebase projenin gerçek ve doğru bilgileri
 const firebaseConfig = {
-  apiKey: "AIzaSyBR1QfW32x9_SA96Q7If28fber4N3XI_3w",
-  authDomain: "todayz-meal.firebaseapp.com",
-  projectId: "todayz-meal",
-  storageBucket: "todayz-meal.firebasestorage.app",
-  messagingSenderId: "784164467895",
-  appId: "1:784164467895:web:f3f9e4fa7811e93b184932",
+  apiKey: "AIzaSyAOuriGi3FYCzhM0tstQQoT4SBU84hIPrM",
+  authDomain: "todayz-meal-3f537.firebaseapp.com",
+  projectId: "todayz-meal-3f537",
+  storageBucket: "todayz-meal-3f537.firebasestorage.app",
+  messagingSenderId: "31772265109",
+  appId: "1:31772265109:web:c63d7d9702d43ff140699c"
 };
 
 // Initialize Firebase
@@ -22,7 +19,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 document.getElementById("signUpForm").addEventListener("submit", function (e) {
-  e.preventDefault(); // Prevent page reload
+  e.preventDefault();
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -34,9 +31,9 @@ document.getElementById("signUpForm").addEventListener("submit", function (e) {
   }
 
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      window.location.href = "login.html"; // Redirect on success
+    .then(() => {
+      alert("Successfully registered!");
+      window.location.href = "login.html";
     })
     .catch((error) => {
       alert("Signup failed: " + error.message);

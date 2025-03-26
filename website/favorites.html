@@ -1,0 +1,43 @@
+<!-- favorites.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Favorites</title>
+</head>
+<body>
+  <h2>My Favorite Recipes</h2>
+  <ul id="favoritesList"></ul>
+  <button onclick="location.href='index.html'">Home</button>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, collection, getDocs } from "./firebase.js";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const favSnapshot = await getDocs(collection(db, "favorites", user.uid, "items"));
+        const favoritesList = document.getElementById("favoritesList");
+        favoritesList.innerHTML = "";
+
+        if (favSnapshot.empty) {
+          favoritesList.innerHTML = "<li>No favorites yet!</li>";
+        } else {
+          favSnapshot.forEach((doc) => {
+            const fav = doc.data();
+            favoritesList.innerHTML += `
+              <li>
+                <img src="${fav.image}" width="100"><br>
+                <strong>${fav.title}</strong><br>
+                Vegan: ${fav.vegan ? "Yes" : "No"}<br>
+                Vegetarian: ${fav.vegetarian ? "Yes" : "No"}
+              </li>
+            `;
+          });
+        }
+      } else {
+        alert("You must log in first!");
+        location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>

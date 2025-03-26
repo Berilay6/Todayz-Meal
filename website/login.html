@@ -1,49 +1,44 @@
+<!-- login.html -->
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>HTML Login Form</title>
-    <link rel="stylesheet" href="style2.css">
+<html lang="en">
+<head>
+  <title>Login - Todayz Meal</title>
+  <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+  <div class="main">
+    <h1>Todayz Meal</h1>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+      <div id="errorMsg" style="color:red;"></div>
+    </form>
+    <p>
+      Not registered?
+      <a href="signup.html">Create an account</a>
+    </p>
+  </div>
 
-    <script type="module" src="login.js" defer></script>
-  </head>
+  <script type="module">
+    import { auth, signInWithEmailAndPassword, onAuthStateChanged } from "./firebase.js";
 
-  <body>
-    <div class="main">
-      <h1>Todayz Meal</h1>
-      <h3>Enter your login credentials</h3>
+    const loginForm = document.getElementById("loginForm");
+    const errorMsg = document.getElementById("errorMsg");
 
-      <form id="loginForm">
-        <label for="username"> Username: </label>
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your Username"
-          required
-        />
+    onAuthStateChanged(auth, user => {
+      if (user) window.location.href = "index.html";
+    });
 
-        <label for="password"> Password: </label>
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter your Password"
-          required
-        />
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-        <div class="wrap">
-          <button id="submit" type="submit">Submit</button>
-        </div>
-      </form>
-
-      <p>
-        Not registered?
-        <a
-          href="signup.html"
-          id="createAccountLink"
-          style="text-decoration: none"
-        >
-          Create an account
-        </a>
-      </p>
-    </div>
-  </body>
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => window.location.href = "index.html")
+        .catch((err) => errorMsg.textContent = err.message);
+    });
+  </script>
+</body>
 </html>

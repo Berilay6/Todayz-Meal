@@ -1,139 +1,86 @@
-// Firebase SDK and Firestore connection
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { auth, db, onAuthStateChanged, doc, setDoc, signOut } from "./firebase.js";
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAOuriGi3FYCzhM0tstQQoT4SBU84hIPrM",
-  authDomain: "todayz-meal-3f537.firebaseapp.com",
-  projectId: "todayz-meal-3f537",
-  storageBucket: "todayz-meal-3f537.firebasestorage.app",
-  messagingSenderId: "31772265109",
-  appId: "1:31772265109:web:c63d7d9702d43ff140699c"
-};
-
-// Initializing Firebase
-const app = initializeApp(firebaseConfig);
-
-// Firestore connection
-const db = getFirestore(app);
-
-// Spoonacular API configuration
-const apiKey = "f09e49ff927e44759109dea49b7e76e0";
+const apiKey = "f53ccab5d21f4b47a7ae3f83f4d89296";
 const apiUrl = "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
 
-// Search button event listener
-document.getElementById("searchButton").addEventListener("click", fetchRecipes);
-
-async function fetchRecipes() {
-    const ingredient = document.getElementById("ingredientInput").value.trim();
-    const veganFilter = document.getElementById("veganFilter").checked;
-    const vegetarianFilter = document.getElementById("vegetarianFilter").checked;
-
-    if (!ingredient) {
-        alert("Please enter an ingredient!");
-        return;
-    }
-
-    try {
-        const response = await fetch(apiUrl + ingredient + `&apiKey=${apiKey}`);
-        let recipes = await response.json();
-
-        const recipeList = document.getElementById("recipeList");
-        recipeList.innerHTML = "";
-
-        if (recipes.length === 0) {
-            recipeList.innerHTML = "<li>No recipes found!</li>";
-            return;
-        }
-
-        for (const recipe of recipes) {
-            const detailsResponse = await fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=${apiKey}`);
-            const recipeDetails = await detailsResponse.json();
-
-            if ((veganFilter && !recipeDetails.vegan) || (vegetarianFilter && !recipeDetails.vegetarian)) {
-                continue;
-            }
-
-            const li = document.createElement("li");
-            li.innerHTML = `
-                <strong>${recipe.title}</strong><br>
-                <img src="${recipe.image}" width="100"><br>
-                <p>Vegan: ${recipeDetails.vegan ? "Yes" : "No"}</p>
-                <p>Vegetarian: ${recipeDetails.vegetarian ? "Yes" : "No"}</p>
-                <button class="viewDetailsButton" data-recipe-id="${recipe.id}">View Details</button>
-            `;
-            recipeList.appendChild(li);
-        }
-
-    } catch (error) {
-        console.error("Error fetching recipes:", error);
-    }
-}
-
-// Event listener for "View Details" buttons (Event Delegation)
-document.addEventListener("click", (event) => {
-    if (event.target.classList.contains("viewDetailsButton")) {
-        const recipeId = event.target.getAttribute("data-recipe-id");
-        fetchRecipeDetails(recipeId);
-    }
-});
-
-async function fetchRecipeDetails(recipeId) {
-    try {
-        const response = await fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${apiKey}`);
-        const recipe = await response.json();
-
-        const modalBody = document.getElementById("modalBody");
-        modalBody.innerHTML = `
-            <h2>${recipe.title}</h2>
-            <img src="${recipe.image}" alt="${recipe.title}" width="200"><br>
-            <p><strong>Preparation Time:</strong> ${recipe.readyInMinutes} minutes</p>
-            <p><strong>Servings:</strong> ${recipe.servings}</p>
-            <h3>Ingredients:</h3>
-            <ul>
-                ${recipe.extendedIngredients.map(ing => `<li>${ing.original}</li>`).join("")}
-            </ul>
-            <h3>Recipe:</h3>
-            <p>${recipe.instructions || "No recipe instructions available."}</p>
-            <button id="favoriteButton">❤️ Add to Favorites</button>
-        `;
-
-        document.getElementById("modal").style.display = "block";
-
-        // Add to favorites button function
-        document.getElementById("favoriteButton").addEventListener("click", () => addToFavorites(recipe));
-    } catch (error) {
-        console.error("Error fetching recipe details:", error);
-    }
-}
-
-async function addToFavorites(recipe) {
-    try {
-        await setDoc(doc(db, "favorites", recipe.id.toString()), {
-            id: recipe.id,
-            title: recipe.title,
-            image: recipe.image,
-            readyInMinutes: recipe.readyInMinutes,
-            servings: recipe.servings,
-            ingredients: recipe.extendedIngredients.map(ing => ing.original),
-            instructions: recipe.instructions || "No recipe instructions available."
-        });
-        console.log("Recipe successfully added:", recipe);
-        alert("Recipe added to favorites! ✅");
-    } catch (error) {
-        console.error("Error adding to favorites:", error);
-    }
-}
-
-// Modal close function
-window.closeModal = function () {
-    document.getElementById("modal").style.display = "none";
+// Logout işlemi
+document.getElementById("logoutBtn").onclick = () => {
+  signOut(auth).then(() => location.href = "login.html");
 };
 
-// Close modal by clicking outside
-window.addEventListener("click", (event) => {
-    if (event.target === document.getElementById("modal")) {
-        closeModal();
-    }
+// Favorites sayfasına git
+document.getElementById("favoritesBtn").onclick = () => {
+  location.href = "favorites.html";
+};
+
+// Profile butonu (aynı favorites sayfasına yönlendirebilir veya profile özel sayfa olabilir)
+document.getElementById("profileButton").onclick = () => {
+  location.href = "favorites.html";
+};
+
+// Kullanıcı giriş kontrolü
+onAuthStateChanged(auth, user => {
+  if (!user) location.href = "login.html";
 });
+
+// Tarifleri getir
+document.getElementById("searchButton").onclick = fetchRecipes;
+
+async function fetchRecipes() {
+  const ingredient = document.getElementById("ingredientInput").value;
+  const vegan = document.getElementById("veganFilter").checked;
+  const vegetarian = document.getElementById("vegetarianFilter").checked;
+
+  const res = await fetch(`${apiUrl}${ingredient}&apiKey=${apiKey}`);
+  const recipes = await res.json();
+  const recipeList = document.getElementById("recipeList");
+  recipeList.innerHTML = "";
+
+  recipes.forEach(async recipe => {
+    const details = await fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=${apiKey}`).then(r => r.json());
+
+    if ((vegan && !details.vegan) || (vegetarian && !details.vegetarian)) return;
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${recipe.title}</strong><br>
+      <img src="${recipe.image}" width="100"><br>
+      Vegan: ${details.vegan ? "Yes" : "No"}<br>
+      Vegetarian: ${details.vegetarian ? "Yes" : "No"}<br>
+      <button onclick="fetchRecipeDetails(${recipe.id})">Details</button>
+    `;
+    recipeList.appendChild(li);
+  });
+}
+
+window.fetchRecipeDetails = async (id) => {
+  const recipe = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`).then(r => r.json());
+
+  document.getElementById("modalBody").innerHTML = `
+    <h2>${recipe.title}</h2>
+    <img src="${recipe.image}" width="200"><br>
+    <ul>${recipe.extendedIngredients.map(i => `<li>${i.original}</li>`).join("")}</ul>
+    <p>${recipe.instructions || "No instructions"}</p>
+    <button id="addFavorite">❤️ Favorite</button>
+  `;
+
+  document.getElementById("modal").style.display = "block";
+  document.getElementById("addFavorite").onclick = () => addToFavorites(recipe);
+};
+
+window.closeModal = () => {
+  document.getElementById("modal").style.display = "none";
+};
+
+async function addToFavorites(recipe) {
+  const user = auth.currentUser;
+  await setDoc(doc(db, "favorites", user.uid, "items", recipe.id.toString()), {
+    id: recipe.id,
+    title: recipe.title,
+    image: recipe.image,
+    vegan: recipe.vegan,
+    vegetarian: recipe.vegetarian,
+    addedAt: new Date()
+  });
+  alert("Added to favorites!");
+}
