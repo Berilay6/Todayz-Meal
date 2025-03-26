@@ -1,30 +1,31 @@
-import { auth, db, onAuthStateChanged, doc, setDoc, signOut } from "./firebase.js";
+import {
+  auth,
+  db,
+  onAuthStateChanged,
+  doc,
+  setDoc,
+  signOut,
+  collection,
+  getDocs,
+} from "./firebase.js";
 
-const apiKey = "f53ccab5d21f4b47a7ae3f83f4d89296";
-const apiUrl = "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
+const apiKey = "f09e49ff927e44759109dea49b7e76e0";
+const apiUrl =
+  "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
 
-// Logout işlemi
 document.getElementById("logoutBtn").onclick = () => {
-  signOut(auth).then(() => location.href = "login.html");
+  signOut(auth).then(() => (location.href = "login.html"));
 };
 
-// Favorites sayfasına git
-document.getElementById("favoritesBtn").onclick = () => {
-  location.href = "favorites.html";
-};
-
-// Profile butonu (aynı favorites sayfasına yönlendirebilir veya profile özel sayfa olabilir)
 document.getElementById("profileButton").onclick = () => {
-  location.href = "favorites.html";
+  location.href = "profile.html";
 };
 
-// Kullanıcı giriş kontrolü
-onAuthStateChanged(auth, user => {
+document.getElementById("searchButton").onclick = fetchRecipes;
+
+onAuthStateChanged(auth, (user) => {
   if (!user) location.href = "login.html";
 });
-
-// Tarifleri getir
-document.getElementById("searchButton").onclick = fetchRecipes;
 
 async function fetchRecipes() {
   const ingredient = document.getElementById("ingredientInput").value;
@@ -36,10 +37,13 @@ async function fetchRecipes() {
   const recipeList = document.getElementById("recipeList");
   recipeList.innerHTML = "";
 
-  recipes.forEach(async recipe => {
-    const details = await fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=${apiKey}`).then(r => r.json());
+  recipes.forEach(async (recipe) => {
+    const details = await fetch(
+      `https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=${apiKey}`
+    ).then((r) => r.json());
 
-    if ((vegan && !details.vegan) || (vegetarian && !details.vegetarian)) return;
+    if ((vegan && !details.vegan) || (vegetarian && !details.vegetarian))
+      return;
 
     const li = document.createElement("li");
     li.innerHTML = `
@@ -54,12 +58,16 @@ async function fetchRecipes() {
 }
 
 window.fetchRecipeDetails = async (id) => {
-  const recipe = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`).then(r => r.json());
+  const recipe = await fetch(
+    `https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`
+  ).then((r) => r.json());
 
   document.getElementById("modalBody").innerHTML = `
     <h2>${recipe.title}</h2>
     <img src="${recipe.image}" width="200"><br>
-    <ul>${recipe.extendedIngredients.map(i => `<li>${i.original}</li>`).join("")}</ul>
+    <ul>${recipe.extendedIngredients
+      .map((i) => `<li>${i.original}</li>`)
+      .join("")}</ul>
     <p>${recipe.instructions || "No instructions"}</p>
     <button id="addFavorite">❤️ Favorite</button>
   `;
@@ -80,7 +88,7 @@ async function addToFavorites(recipe) {
     image: recipe.image,
     vegan: recipe.vegan,
     vegetarian: recipe.vegetarian,
-    addedAt: new Date()
+    addedAt: new Date(),
   });
   alert("Added to favorites!");
 }
