@@ -11,6 +11,7 @@ import {
   setDoc,
   collection,
   getDocs,
+  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -36,4 +37,5 @@ export {
   setDoc,
   collection,
   getDocs,
+  deleteDoc,
 };
