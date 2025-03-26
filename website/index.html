@@ -4,19 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todayz Meal</title>
+    <!-- Harici CSS dosyasını bağlar -->
     <link rel="stylesheet" href="style.css" />
+    <!-- Google Material Icons kütüphanesini içeri aktarır -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
     />
   </head>
   <body>
+     <!-- Kullanıcı profil butonu -->
     <button id="profileButton">
       <img src="profile.jpg" alt="Profile" />
     </button>
-
+       <!-- Arama kutusunu içeren bölüm -->
     <div class="search-container">
       <h2 class="title">Todayz Meal</h2>
+      <!-- Arama giriş alanı -->
       <div class="search">
         <span class="search-icon material-symbols-outlined">search</span>
         <input
@@ -26,22 +30,26 @@
           placeholder="Enter ingredients"
         />
       </div>
+      <!-- Vegan ve vejetaryen filtre seçenekleri -->
       <div class="checkbox">
         <label><input type="checkbox" id="veganFilter" /> Vegan</label>
         <label
           ><input type="checkbox" id="vegetarianFilter" /> Vegetarian</label
         >
       </div>
+      <!-- Tarif arama butonu -->
       <button id="searchButton">Search Recipes</button>
+      <!-- Kullanıcı çıkış yapma butonu -->
       <button id="logoutBtn">Logout</button>
     </div>
 
+    <!-- Tariflerin listelendiği bölüm -->
     <div class="recipe-container">
       <h2>Recipes</h2>
-      <ul id="recipeList"></ul>
+      <ul id="recipeList"></ul> <!-- Tariflerin listeleneceği alan -->
     </div>
 
-    <!-- Modal -->
+      <!-- Modal Penceresi (Detaylı tarif bilgileri için) -->
     <div
       id="modal"
       style="
@@ -66,11 +74,13 @@
           border-radius: 10px;
         "
       >
+       <!-- Modal kapatma butonu -->
         <button onclick="closeModal()">Close</button>
+       <!-- Tarif detaylarının gösterileceği alan -->
         <div id="modalBody"></div>
       </div>
     </div>
-
+    <!-- JavaScript dosyasını bağlar -->
     <script type="module" src="script.js"></script>
   </body>
 </html>
