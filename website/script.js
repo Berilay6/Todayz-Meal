@@ -1,3 +1,13 @@
+import { auth, db } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
 const apiKey = "f53ccab5d21f4b47a7ae3f83f4d89296";
 const apiUrl =
   "https://api.spoonacular.com/recipes/findByIngredients?number=5&ranking=1&ingredients=";
