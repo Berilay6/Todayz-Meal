@@ -1,13 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const list = document.getElementById("favoriteList");
   const emailDisplay = document.getElementById("userEmail");
-  const { auth, onAuthStateChanged, getDocs, collection, db, doc, deleteDoc } =
-    await import("./firebase.js");
-
-  window.auth = auth;
-  window.db = db;
-  window.doc = doc;
-  window.deleteDoc = deleteDoc;
+  const { auth, onAuthStateChanged, getDocs, collection, db } = await import(
+    "./firebase.js"
+  );
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return (window.location.href = "login.html");
@@ -53,29 +49,8 @@ window.fetchRecipeDetails = async function (id) {
       .map((i) => `<li>${i.original}</li>`)
       .join("")}</ul>
     <p>${recipe.instructions || "No instructions available."}</p>
-    <button onclick="removeFromFavorites(${
-      recipe.id
-    })">❌ Remove from Favorites</button>
-
   `;
   document.getElementById("modal").style.display = "block";
-};
-
-window.removeFromFavorites = async function (recipeId) {
-  const user = auth.currentUser;
-  if (!user) return alert("You must be logged in.");
-
-  try {
-    await deleteDoc(
-      doc(db, "favorites", user.uid, "items", recipeId.toString())
-    );
-    alert("Removed from favorites.");
-    document.getElementById("modal").style.display = "none";
-    location.reload();
-  } catch (err) {
-    console.error("Error removing from favorites:", err);
-    alert("Failed to remove from favorites.");
-  }
 };
 
 window.closeModal = () => {

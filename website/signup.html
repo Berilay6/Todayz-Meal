@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Sayfa başlığı - Tarayıcı sekmesinde görünür -->
     <title>Sign Up</title>
+    <!-- Sayfayı stilize eden CSS dosyasını buraya dahil ediyoruz -->
     <link rel="stylesheet" href="style3.css" />
+
+    <!-- Firebase işlevlerini içeren JS dosyasını dahil ediyoruz -->
     <script type="module" src="firebase.js"></script>
+    <!-- Kayıt olma işlemi için JavaScript dosyasını ayrıdık ve modül olarak dahil ediyoruz -->
     <script type="module" src="register.js" defer></script>
   </head>
   <body>
+
+    <!-- Kullanıcı kayıt formu -->
     <form id="signUpForm" style="border: 1px solid #ccc">
       <div class="container">
+        <!-- Kayıt sayfasının başlığı -->
         <h1>Sign Up</h1>
+        <!-- Kayıt formunu doldurma açıklaması -->
         <p>Please fill in this form to create an account.</p>
         <hr />
 
+        <!-- E-posta girişi için etiket ve input alanı -->
         <label for="email"><b>Email</b></label>
         <input
           type="email"
@@ -22,6 +32,7 @@
           required
         />
 
+        <!-- Şifre girişi için etiket ve input alanı -->
         <label for="password"><b>Password</b></label>
         <input
           type="password"
@@ -31,6 +42,7 @@
           required
         />
 
+        <!-- Şifre tekrarı girişi için etiket ve input alanı -->
         <label for="passwordRep"><b>Repeat Password</b></label>
         <input
           type="password"
@@ -40,12 +52,14 @@
           required
         />
 
+        <!-- Kullanıcıyı sözleşme ve gizlilik politikasıyla bilgilendiren metin -->
         <p>
           By creating an account you agree to our
           <a href="#" style="color: dodgerblue">Terms & Privacy</a>.
         </p>
 
-        <div class="clearfix">
+        <div class="clearfix"> <!-- clearfix sınıfı, container'ın etrafındaki floating elementleri düzeltmesini sağlar..-->
+          <!-- Kayıt işlemini iptal etme butonu -->
           <button
             type="button"
             class="cancelbtn"
@@ -53,6 +67,8 @@
           >
             Cancel
           </button>
+
+          <!-- Kayıt olma işlemi için gönderme (submit) butonu -->
           <button id="signup" type="submit" class="signupbtn">Sign Up</button>
         </div>
       </div>

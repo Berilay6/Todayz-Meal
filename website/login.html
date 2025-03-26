@@ -2,47 +2,38 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Login - Todayz Meal</title>
+    <!-- Sayfanın başlık kısmı, tarayıcı sekmesinde görünecek -->
+    <title>Login - Todayz Meal</title> 
+    <!-- Sayfayı stilize eden CSS dosyasını buraya dahil ediyoruz -->
     <link rel="stylesheet" href="style2.css" />
   </head>
   <body>
+    <!-- Ana içerik alanı -->
     <div class="main">
+      <!-- Web sitesiinin adı -->
       <h1>Todayz Meal</h1>
+
+      <!-- Kullanıcı giriş formu -->
       <form id="loginForm">
-        <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-        <div id="errorMsg" style="color: red"></div>
+        <input type="email" id="email" placeholder="Email" required />  <!-- E-posta girişi için input alanı -->
+        <input type="password" id="password" placeholder="Password" required />  <!-- Şifre girişi için input alanı -->
+        <button type="submit">Login</button>  <!-- Giriş butonu -->
+        <div id="errorMsg" style="color: red"></div>  <!-- Hata mesajlarını göstereceğimiz div -->
       </form>
+      
+      <!-- Hesabı olmayan kullanıcılar için kayıt olma linki -->
       <p>
         Not registered?
         <a href="signup.html">Create an account</a>
       </p>
     </div>
 
-    <script type="module">
-      import {
-        auth,
-        signInWithEmailAndPassword,
-        onAuthStateChanged,
-      } from "./firebase.js";
-
-      const loginForm = document.getElementById("loginForm");
-      const errorMsg = document.getElementById("errorMsg");
-
-      onAuthStateChanged(auth, (user) => {
-        if (user) window.location.href = "index.html";
-      });
-
-      loginForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        signInWithEmailAndPassword(auth, email, password)
-          .then(() => (window.location.href = "index.html"))
-          .catch((err) => (errorMsg.textContent = err.message));
-      });
-    </script>
+    <!--
+    `login.js` dosyasını modül olarak dahil ediyoruz.
+      - Script kodunu okunurluğu kolaylaştırmak için ayırıp modül olarak çağırdık.
+      - `type="module"`: Bu, dosyanın ES6 modül olarak çalışmasını sağlar.
+      - `defer`: Script dosyasının yüklenmesi sayfa içeriği tamamen yüklendikten sonra yapılır, bu sayede sayfa yüklenme hızını artırır.
+    -->
+    <script type="module" src="login.js" defer></script>
   </body>
 </html>
