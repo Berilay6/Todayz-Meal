@@ -1,12 +1,16 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const list = document.getElementById("favoriteList");
-
+  const emailDisplay = document.getElementById("userEmail");
   const { auth, onAuthStateChanged, getDocs, collection, db } = await import(
     "./firebase.js"
   );
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return (window.location.href = "login.html");
+
+    if (user) {
+      emailDisplay.textContent = user.email;
+    }
 
     const snapshot = await getDocs(
       collection(db, "favorites", user.uid, "items")
