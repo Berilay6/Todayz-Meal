@@ -6,15 +6,10 @@
     <title>User Profile</title>
     <!-- Harici CSS dosyasını bağlar -->
     <link rel="stylesheet" href="styleProfile.css" />
-   <!-- Google Material Icons kütüphanesini içeri aktarır -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search"
-    />
   </head>
   <body>
     <div class="wrapper">
-       <!-- Kullanıcı profiline hoş geldiniz mesajı -->
+      <!-- Kullanıcı profiline hoş geldiniz mesajı -->
       <h1>Welcome to Your Profile!</h1>
       <!-- Kullanıcı profil fotoğrafı -->
       <img src="profile.jpg" class="profileImg" alt="profilePic" />
@@ -28,10 +23,10 @@
         <ul id="favoriteList"></ul>
       </div>
     </div>
-     <!-- Önceki sayfaya dönmek için buton -->
+    <!-- Önceki sayfaya dönmek için buton -->
     <button class="goBack" onclick="goBack()">Go Back</button>
 
-     <!-- Modal Penceresi (Favori tarif detayları için) -->
+    <!-- Modal Penceresi (Favori tarif detayları için) -->
     <div
       id="modal"
       style="
@@ -56,13 +51,13 @@
           border-radius: 10px;
         "
       >
-      <!-- Modal kapatma butonu -->
+        <!-- Modal kapatma butonu -->
         <button onclick="closeModal()">Close</button>
-       <!-- Modal içeriğinin gösterileceği alan --> 
+        <!-- Modal içeriğinin gösterileceği alan -->
         <div id="modalBody"></div>
       </div>
     </div>
- <!-- JavaScript dosyasını bağlar -->
+    <!-- JavaScript dosyasını bağlar -->
     <script src="scriptProfile.js"></script>
   </body>
 </html>
