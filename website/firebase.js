@@ -6,7 +6,6 @@
   - Kodun daha okunaklı ve yönetilebilir olmasına katkı sağlar.
 */
 
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import {
   getAuth,
@@ -20,6 +19,7 @@ import {
   setDoc,
   collection,
   getDocs,
+  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 /*  
@@ -51,4 +51,5 @@ export {
   setDoc, // Firestore'da belge oluşturan/güncelleyen fonksiyon
   collection, // Firestore koleksiyon referansı oluşturan fonksiyon
   getDocs, // Firestore koleksiyonundaki belgeleri getiren fonksiyon
+  deleteDoc, // Firestore'dan belgeyi silen fonksiyon
 };
